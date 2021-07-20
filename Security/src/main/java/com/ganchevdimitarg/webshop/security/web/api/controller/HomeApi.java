@@ -41,11 +41,17 @@ public class HomeApi {
 
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(e -> log.error(e.getDefaultMessage()));
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header(HttpHeaders.LOCATION, "/v1/login").build();
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .header(HttpHeaders.LOCATION, "/v1/register")
+                    .build();
         }
 
         userService.register(modelMapper.map(user, UserServiceModel.class));
 
-        return ResponseEntity.status(HttpStatus.CREATED).header(HttpHeaders.LOCATION, "/v1/login").build();
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .header(HttpHeaders.LOCATION, "/v1/login")
+                .build();
     }
 }

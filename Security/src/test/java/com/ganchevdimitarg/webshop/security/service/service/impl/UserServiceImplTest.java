@@ -1,4 +1,4 @@
-package com.ganchevdimitarg.webshop.security.service.service;
+package com.ganchevdimitarg.webshop.security.service.service.impl;
 
 import com.ganchevdimitarg.webshop.security.data.model.UserEntity;
 import com.ganchevdimitarg.webshop.security.data.repository.UserRepository;

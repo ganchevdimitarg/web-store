@@ -30,17 +30,17 @@ public class UsersDetailsService implements UserDetailsService {
                 .orElseThrow(()->new UsernameNotFoundException("User " + username + " not found!"));
     }
 
-    private UserDetails mapToUserDetails(UserEntity user){
+    private UserDetails mapToUserDetails(UserEntity entity){
         return new User(
-                user.getUsername(),
-                user.getPassword(),
-                user.getAuthority()
+                entity.getUsername(),
+                entity.getPassword(),
+                entity.getAuthorities()
                         .stream()
                         .map(this::mapToGrantedAuthority)
                         .collect(Collectors.toList()));
     }
 
-    private GrantedAuthority mapToGrantedAuthority(Authority authority){
-        return new SimpleGrantedAuthority(authority.toString());
+    private GrantedAuthority mapToGrantedAuthority(GrantedAuthority authority){
+        return new SimpleGrantedAuthority(authority.getAuthority());
     }
 }
