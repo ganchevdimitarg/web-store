@@ -46,7 +46,7 @@ public class UserValidationImpl implements UserValidation {
         return isNotBlank(phoneNumber) &&
                 isMinLengthIsMoreOrEqualToNine(phoneNumber) &&
                 isMaxLengthIsLessOrEqualToTen(phoneNumber) &&
-                isContainsOnlyDigit(phoneNumber);
+                isContainsOnlyDigits(phoneNumber);
     }
 
     private boolean isNotBlank(String token) {
@@ -97,7 +97,7 @@ public class UserValidationImpl implements UserValidation {
         return isTokenMatchingToCurrentPattern(WITHOUT_DIGIT_PATTERN, name);
     }
 
-    private boolean isContainsOnlyDigit(String phoneNumber) {
+    private boolean isContainsOnlyDigits(String phoneNumber) {
         return isTokenMatchingToCurrentPattern(ONLY_DIGIT_PATTERN, phoneNumber);
     }
 

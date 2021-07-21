@@ -41,6 +41,7 @@ public class UserEntity extends BaseEntity implements Serializable, UserDetails 
     private String password;
 
     private Set<? extends GrantedAuthority> grantedAuthorities;
+
     private LocalDateTime registerDateTime;
 
     @Size(min = 3, max = 12, message = "First name must be between 3 and 12 characters!")
