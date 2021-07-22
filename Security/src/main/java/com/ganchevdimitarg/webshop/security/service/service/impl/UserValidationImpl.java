@@ -1,5 +1,6 @@
 package com.ganchevdimitarg.webshop.security.service.service.impl;
 
+import com.ganchevdimitarg.webshop.security.service.model.UserServiceModel;
 import com.ganchevdimitarg.webshop.security.service.service.UserValidation;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,16 @@ import static com.ganchevdimitarg.webshop.security.constant.Constants.*;
 
 @Service
 public class UserValidationImpl implements UserValidation {
+    @Override
+    public boolean isValid(UserServiceModel model) {
+        return isUsernameValid(model.getUsername()) &&
+                isPasswordValid(model.getPassword()) &&
+                isNameValid(model.getFirstName()) &&
+                isNameValid(model.getLastName()) &&
+                isAddressValid(model.getAddress()) &&
+                isPhoneNumberValid(model.getPhoneNumber());
+    }
+
     @Override
     public boolean isUsernameValid(String username) {
         return isNotBlank(username) &&
@@ -27,10 +38,10 @@ public class UserValidationImpl implements UserValidation {
 
     @Override
     public boolean isNameValid(String name) {
-        return !isNotBlank(name) ||
-                !isMinLengthIsMoreOrEqualToThree(name) ||
-                !isMaxLengthIsLessOrEqualToTwelve(name) ||
-                !isContainsFirstUppercaseLetterAndLowercaseLetters(name) ||
+        return isNotBlank(name) &&
+                isMinLengthIsMoreOrEqualToThree(name) &&
+                isMaxLengthIsLessOrEqualToTwelve(name) &&
+                isContainsFirstUppercaseLetterAndLowercaseLetters(name) &&
                 isNameContainsDigit(name);
     }
 

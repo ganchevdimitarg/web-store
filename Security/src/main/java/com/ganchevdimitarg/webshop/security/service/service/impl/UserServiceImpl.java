@@ -52,12 +52,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
      */
     @Override
     public void register(UserServiceModel model) {
-        if (!userValidation.isUsernameValid(model.getUsername()) &&
-                !userValidation.isPasswordValid(model.getPassword()) &&
-                !userValidation.isNameValid(model.getFirstName()) &&
-                !userValidation.isNameValid(model.getLastName()) &&
-                !userValidation.isAddressValid(model.getAddress()) &&
-                !userValidation.isPhoneNumberValid(model.getPhoneNumber())){
+        if (!userValidation.isValid(model)){
 
             log.error("User data is not correct! Try again!");
             throw new IllegalArgumentException("User data is not correct! Try again!");

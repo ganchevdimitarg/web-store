@@ -1,5 +1,6 @@
 package com.ganchevdimitarg.webshop.security.service.service.impl;
 
+import com.ganchevdimitarg.webshop.security.service.model.UserServiceModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +20,34 @@ class UserValidationImplTest {
 
     @InjectMocks
     UserValidationImpl validation;
+
+    @Test
+    @DisplayName("Should return true if model is correct")
+    void shouldReturnTrueIfModelIsCorrect() {
+        UserServiceModel model = new UserServiceModel(
+                "1",
+                "dimtiar",
+                "1qazXsw@",
+                "Dimitar",
+                "Dimitar",
+                "varnas",
+                "0888888888");
+        assertTrue(validation.isValid(model));
+    }
+
+    @Test
+    @DisplayName("Should return false if model is incorrect")
+    void shouldReturnFalseIfModelIsIncorrect() {
+        UserServiceModel model = new UserServiceModel(
+                "1",
+                "",
+                "1qazXsw@",
+                "Dimitar",
+                "Dimitar",
+                "varnas",
+                "0888888888");
+        assertFalse(validation.isValid(model));
+    }
 
     @Test
     @DisplayName("Should return true if username is correct")
@@ -65,6 +94,31 @@ class UserValidationImplTest {
                 () -> assertFalse(validation.isPasswordValid("sw12@!#$as"), "Password do not content least one upper letter"),
                 () -> assertFalse(validation.isPasswordValid("QAsw@!#$"), "Password do not content least one digit"),
                 () -> assertFalse(validation.isPasswordValid("QAsw12asS"), "Password do not content least one special symbol")
+        );
+    }
+
+    @Test
+    @DisplayName("Should return true if name is correct")
+    void shouldReturnTrueIfNameIsCorrect() {
+        Assertions.assertAll(
+                () -> assertTrue(validation.isNameValid("Dimitar"), "Name is not empty"),
+                () -> assertTrue(validation.isNameValid("Maq"), "Name's length is equal to the minimum allowed (3)"),
+                () -> assertTrue(validation.isNameValid("Dimitarganch"), "Name's length is equal to the maximum allowed (12)"),
+                () -> assertTrue(validation.isNameValid("Dimitar"), "Name's length is between allowed minimum and maximum (3 - 12)"),
+                () -> assertTrue(validation.isNameValid("Dimitar"), "Name allowed symbols"),
+                () -> assertTrue(validation.isNameValid("Dimitar"), "Name do not contains digits")
+        );
+    }
+
+    @Test
+    @DisplayName("Should return false if name is incorrect")
+    void shouldReturnFalseIfNameIsIncorrect() {
+        Assertions.assertAll(
+                () -> assertFalse(validation.isNameValid(""), "Name is empty"),
+                () -> assertFalse(validation.isNameValid(" "), "Name is empty space"),
+                () -> assertFalse(validation.isNameValid("di"), "Name's length  is less than the minimum allowed (12)"),
+                () -> assertFalse(validation.isNameValid("dimitarganchev"), "Name more than the maximum allowed (12)"),
+                () -> assertFalse(validation.isNameValid("d1m1tar"), "Name contain digits")
         );
     }
 
