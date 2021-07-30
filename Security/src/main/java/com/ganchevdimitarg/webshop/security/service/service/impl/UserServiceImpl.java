@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ import static com.ganchevdimitarg.webshop.security.data.model.AppUserRole.ROLE_U
 @Service
 @AllArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserDetailsService, UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final UserRepository userRepository;
@@ -35,30 +34,25 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     /**
      * Find user by username and load it.
      * Otherwise, return exception.
+     *
      * @param username set by the user
      * @return the intended user
      * @throws UsernameNotFoundException if username not found
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userDao
-                .selectUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
+        return userDao.selectUserByUsername(username);
     }
 
     /**
-     * Register user in DB.
+     * Save user in DB.
+     *
      * @param model user model with detailed information about it
+     * @return saved user
      */
     @Override
-    public void register(UserServiceModel model) {
-        if (!userValidation.isUsernameValid(model.getUsername()) &&
-                !userValidation.isPasswordValid(model.getPassword()) &&
-                !userValidation.isNameValid(model.getFirstName()) &&
-                !userValidation.isNameValid(model.getLastName()) &&
-                !userValidation.isAddressValid(model.getAddress()) &&
-                !userValidation.isPhoneNumberValid(model.getPhoneNumber())){
-
+    public UserServiceModel register(UserServiceModel model) {
+        if (!userValidation.isValid(model)) {
             log.error("User data is not correct! Try again!");
             throw new IllegalArgumentException("User data is not correct! Try again!");
         }
@@ -78,12 +72,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 true
         );
 
-        userRepository.save(user);
-
+        return modelMapper.map(userRepository.save(user), UserServiceModel.class);
     }
 
     /**
      * Find user by username.
+     *
      * @param username wanted user
      * @return user
      */

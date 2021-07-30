@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      auto-index-creation: 'true'
+      authentication-database: admin
+      uri: mongodb://localhost:27017/webShopSecurityDB?readPreference=primary&appname=MongoDB%20Compass&ssl=false
+
+application:
+  jwt:
+    tokenPrefix: 'Bearer '
+    tokenExpirationAfterDays: '14'
+    secretKey: dqwionfdhuuiqwbubfuiaodshuhefuisaoufheuwusdifhuwuphgnvnxhurhuwhgnjksndvubwnvuisdnvvjkxlncvuwhwupnfsjdnfuwigbvs
+
+
+

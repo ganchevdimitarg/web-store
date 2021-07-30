@@ -3,7 +3,7 @@ package com.ganchevdimitarg.webshop.security.config;
 import com.ganchevdimitarg.webshop.security.jwt.JwtConfig;
 import com.ganchevdimitarg.webshop.security.jwt.JwtTokenVerifier;
 import com.ganchevdimitarg.webshop.security.jwt.JwtUsernameAndPasswordAuthenticationFilter;
-import com.ganchevdimitarg.webshop.security.service.service.impl.UserServiceImpl;
+import com.ganchevdimitarg.webshop.security.service.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,7 @@ import javax.crypto.SecretKey;
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
 
@@ -44,7 +44,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
 
@@ -52,7 +52,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder);
-        provider.setUserDetailsService(userServiceImpl);
+        provider.setUserDetailsService(userService);
 
         return provider;
     }
