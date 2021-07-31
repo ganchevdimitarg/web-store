@@ -64,8 +64,8 @@ class RegisterUserApiTest {
     }
 
     @Test
-    @DisplayName("Register user should return status bad request (400) if user send incorrect data")
-    void registerUserShouldReturnStatusBadRequestIfUserSendIncorrectData() throws Exception {
+    @DisplayName("Register user should return status method not allowed (405) if user send incorrect data")
+    void registerUserShouldReturnStatusMethodNotAllowedIfUserSendIncorrectData() throws Exception {
         UserRegisterControllerModel user = new UserRegisterControllerModel();
         mockMvc
                 .perform(
