@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   data:
@@ -7,12 +7,22 @@ spring:
       auto-index-creation: 'true'
       authentication-database: admin
       uri: mongodb://localhost:27017/webShopSecurityDB?readPreference=primary&appname=MongoDB%20Compass&ssl=false
+  security:
+    oauth2:
+      client:
+        registration:
+          facebook:
+            client-id: ${FACEBOOK_CLIENT_ID}
+            client-secret: ${FACEBOOK_CLIENT_SECRET}
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
 
 application:
   jwt:
     tokenPrefix: 'Bearer '
     tokenExpirationAfterDays: '14'
-    secretKey: dqwionfdhuuiqwbubfuiaodshuhefuisaoufheuwusdifhuwuphgnvnxhurhuwhgnjksndvubwnvuisdnvvjkxlncvuwhwupnfsjdnfuwigbvs
+    secretKey: ${JWT_SECRET_KEY}
 
 
 

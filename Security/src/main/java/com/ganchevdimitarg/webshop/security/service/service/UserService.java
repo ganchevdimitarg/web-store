@@ -1,10 +1,13 @@
 package com.ganchevdimitarg.webshop.security.service.service;
 
-import com.ganchevdimitarg.webshop.security.service.model.UserServiceModel;
+import com.ganchevdimitarg.webshop.security.data.model.UserEntity;
+import com.ganchevdimitarg.webshop.security.service.dto.UserServiceDTO;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
-    UserServiceModel register(UserServiceModel model);
+    UserServiceDTO register(UserServiceDTO model);
 
-    UserServiceModel findByUsername(String username);
+    UserServiceDTO findByUsername(String username);
+
+    UserEntity getOrCreateUser(String username, String name);
 }

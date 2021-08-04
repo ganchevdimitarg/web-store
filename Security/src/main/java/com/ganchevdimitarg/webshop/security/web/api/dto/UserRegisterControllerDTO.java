@@ -1,4 +1,4 @@
-package com.ganchevdimitarg.webshop.security.web.api.model;
+package com.ganchevdimitarg.webshop.security.web.api.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ import static com.ganchevdimitarg.webshop.security.constant.Constants.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserRegisterControllerModel {
+public class UserRegisterControllerDTO {
     @Size(min = 5, max = 20, message = "Email must be between 5 and 20 characters!")
     @NotBlank(message = "Email cannot be empty!")
     @Email

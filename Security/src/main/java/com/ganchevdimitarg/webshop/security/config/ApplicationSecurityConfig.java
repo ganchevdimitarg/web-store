@@ -1,5 +1,6 @@
 package com.ganchevdimitarg.webshop.security.config;
 
+import com.ganchevdimitarg.webshop.security.hendler.OAuth2UserAuthSuccessHandler;
 import com.ganchevdimitarg.webshop.security.jwt.JwtConfig;
 import com.ganchevdimitarg.webshop.security.jwt.JwtTokenVerifier;
 import com.ganchevdimitarg.webshop.security.jwt.JwtUsernameAndPasswordAuthenticationFilter;
@@ -26,6 +27,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
+    private final OAuth2UserAuthSuccessHandler oAuth2UserAuthSuccessHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -37,9 +39,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/css/*", "/js/*", "/", "index", "/v1/login", "/v1/user/register").permitAll()
+                .antMatchers("/css/*", "/js/*", "/", "/index", "/v1/login", "/v1/register").permitAll()
                 .anyRequest()
-                .authenticated();
+                .authenticated()
+                .and()
+                .oauth2Login()
+                .defaultSuccessUrl("/v1/home.html", true)
+                .successHandler(oAuth2UserAuthSuccessHandler);
 
     }
 
@@ -56,4 +62,5 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
         return provider;
     }
+
 }

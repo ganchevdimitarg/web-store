@@ -1,17 +1,15 @@
-package com.ganchevdimitarg.webshop.security.service.model;
+package com.ganchevdimitarg.webshop.security.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserServiceModel {
+public class UserServiceDTO {
     private String _id;
     private String username;
     private String password;

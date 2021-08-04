@@ -2,7 +2,7 @@ package com.ganchevdimitarg.webshop.security.service.service.impl;
 
 import com.ganchevdimitarg.webshop.security.data.model.UserEntity;
 import com.ganchevdimitarg.webshop.security.data.repository.UserRepository;
-import com.ganchevdimitarg.webshop.security.service.model.UserServiceModel;
+import com.ganchevdimitarg.webshop.security.service.dto.UserServiceDTO;
 import com.ganchevdimitarg.webshop.security.service.service.UserDao;
 import com.ganchevdimitarg.webshop.security.service.service.UserValidation;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,11 +26,11 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
-    private String TEST_USER_NAME_EXISTS = "dimitar";
-    private String TEST_USER_NAME_NOT_EXISTS = "petar";
+    private String TEST_USER_NAME_VALID = "dimitar";
+    private String TEST_USER_NAME_INVALID = "petar";
 
     private UserEntity testUser;
-    private UserServiceModel testUserModel;
+    private UserServiceDTO testUserModel;
 
     @Mock
     UserDao mockUserDao;
@@ -50,22 +50,20 @@ class UserServiceImplTest {
     @InjectMocks
     UserServiceImpl serviceToTest;
 
-    String username = "dimitar";
-
     @BeforeEach
     void setUp() {
         testUser = new UserEntity();
-        testUser.setUsername(TEST_USER_NAME_EXISTS);
+        testUser.setUsername(TEST_USER_NAME_VALID);
 
-        testUserModel = new UserServiceModel();
-        testUserModel.setUsername(TEST_USER_NAME_EXISTS);
+        testUserModel = new UserServiceDTO();
+        testUserModel.setUsername(TEST_USER_NAME_VALID);
     }
 
     @Test
     @DisplayName("Load user by username if user exist should load it")
     void loadUserByUsernameIfUserExistShouldLoadIt() {
-        when(mockUserDao.selectUserByUsername(TEST_USER_NAME_EXISTS)).thenReturn(testUser);
-        UserDetails actualUser = serviceToTest.loadUserByUsername(TEST_USER_NAME_EXISTS);
+        when(mockUserDao.selectUserByUsername(TEST_USER_NAME_VALID)).thenReturn(testUser);
+        UserDetails actualUser = serviceToTest.loadUserByUsername(TEST_USER_NAME_VALID);
 
         assertEquals(testUser.getUsername(), actualUser.getUsername());
     }
@@ -73,9 +71,9 @@ class UserServiceImplTest {
     @Test
     @DisplayName("Load user by username if user not exist should throw exception")
     void loadUserByUsernameIfUserNotExistShouldThrowException() {
-        when(mockUserDao.selectUserByUsername(TEST_USER_NAME_NOT_EXISTS)).thenThrow(UsernameNotFoundException.class);
+        when(mockUserDao.selectUserByUsername(TEST_USER_NAME_INVALID)).thenThrow(UsernameNotFoundException.class);
 
-        assertThrows(UsernameNotFoundException.class, () -> serviceToTest.loadUserByUsername(TEST_USER_NAME_NOT_EXISTS));
+        assertThrows(UsernameNotFoundException.class, () -> serviceToTest.loadUserByUsername(TEST_USER_NAME_INVALID));
     }
 
 
@@ -85,8 +83,9 @@ class UserServiceImplTest {
 
         when(mockMapper.map(any(), any())).thenReturn(testUserModel);
         when(mockValidation.isValid(testUserModel)).thenReturn(true);
+        when(mockUserRepository.findByUsername(TEST_USER_NAME_VALID)).thenReturn(Optional.empty());
 
-        UserServiceModel register = serviceToTest.register(testUserModel);
+        UserServiceDTO register = serviceToTest.register(testUserModel);
 
         verify(mockUserRepository, times(1)).save(any(UserEntity.class));
         assertEquals(register.getUsername(), testUserModel.getUsername());
@@ -101,10 +100,43 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("Register user with exist username should throw exception")
+    void registerUserWithExistUsernameShouldThrowException() {
+        when(mockValidation.isValid(testUserModel)).thenReturn(true);
+        when(mockUserRepository.findByUsername(TEST_USER_NAME_VALID)).thenReturn(Optional.of(testUser));
+
+        assertThrows(IllegalArgumentException.class, () -> serviceToTest.register(testUserModel));
+    }
+
+    @Test
     @DisplayName("Find by username with given username should return correct user")
     void findByUsernameWithGivenUsernameShouldReturnUser() {
-        when(mockUserRepository.findByUsername(TEST_USER_NAME_EXISTS)).thenReturn(Optional.of(testUser));
+        when(mockUserRepository.findByUsername(TEST_USER_NAME_VALID)).thenReturn(Optional.of(testUser));
         when(mockMapper.map(any(), any())).thenReturn(testUserModel);
-        assertEquals(testUser.getUsername(), serviceToTest.findByUsername(TEST_USER_NAME_EXISTS).getUsername());
+        assertEquals(testUser.getUsername(), serviceToTest.findByUsername(TEST_USER_NAME_VALID).getUsername());
+    }
+
+    @Test
+    @DisplayName("Get or create user by username should return exist user")
+    void getOrCreateUserByUsernameShouldReturnExistUser() {
+        when(mockUserRepository.findByUsername(TEST_USER_NAME_VALID)).thenReturn(Optional.of(testUser));
+
+        assertEquals(testUser.getUsername(),
+                serviceToTest.getOrCreateUser(TEST_USER_NAME_VALID, TEST_USER_NAME_VALID).getUsername());
+    }
+
+    @Test
+    @DisplayName("Get or create user by username should create new user when not exist")
+    void getOrCreateUserByUsernameShouldCreateNewUserWhenNotExist() {
+        when(mockUserRepository.findByUsername(TEST_USER_NAME_VALID)).thenReturn(Optional.empty());
+
+        assertEquals(testUser.getUsername(),
+                serviceToTest.getOrCreateUser(TEST_USER_NAME_VALID, "Dimitar Ganchev").getUsername());
+    }
+
+    @Test
+    @DisplayName("Get or create user by username should throw exception when username is blank")
+    void getOrCreateUserByUsernameShouldThrowExceptionWhenUsernameIsBlank() {
+        assertThrows(IllegalArgumentException.class, () -> serviceToTest.register(new UserServiceDTO()));
     }
 }

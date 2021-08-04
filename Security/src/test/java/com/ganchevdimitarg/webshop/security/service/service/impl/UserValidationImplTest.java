@@ -1,19 +1,15 @@
 package com.ganchevdimitarg.webshop.security.service.service.impl;
 
-import com.ganchevdimitarg.webshop.security.service.model.UserServiceModel;
+import com.ganchevdimitarg.webshop.security.service.dto.UserServiceDTO;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class UserValidationImplTest {
@@ -24,7 +20,7 @@ class UserValidationImplTest {
     @Test
     @DisplayName("Should return true if model is correct")
     void shouldReturnTrueIfModelIsCorrect() {
-        UserServiceModel model = new UserServiceModel(
+        UserServiceDTO model = new UserServiceDTO(
                 "1",
                 "dimtiar",
                 "1qazXsw@",
@@ -38,7 +34,7 @@ class UserValidationImplTest {
     @Test
     @DisplayName("Should return false if model is incorrect")
     void shouldReturnFalseIfModelIsIncorrect() {
-        UserServiceModel model = new UserServiceModel(
+        UserServiceDTO model = new UserServiceDTO(
                 "1",
                 "",
                 "1qazXsw@",

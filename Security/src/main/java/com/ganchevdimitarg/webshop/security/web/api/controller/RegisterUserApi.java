@@ -1,8 +1,8 @@
 package com.ganchevdimitarg.webshop.security.web.api.controller;
 
-import com.ganchevdimitarg.webshop.security.service.model.UserServiceModel;
+import com.ganchevdimitarg.webshop.security.service.dto.UserServiceDTO;
 import com.ganchevdimitarg.webshop.security.service.service.UserService;
-import com.ganchevdimitarg.webshop.security.web.api.model.UserRegisterControllerModel;
+import com.ganchevdimitarg.webshop.security.web.api.dto.UserRegisterControllerDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -25,11 +25,11 @@ public class RegisterUserApi {
     private final UserService userService;
     private final ModelMapper modelMapper;
 
-    @PostMapping(value = "/v1/user/register",
+    @PostMapping(value = "/v1/register",
             consumes = APPLICATION_JSON_VALUE,
             headers = "Accept=application/json")
-    public ResponseEntity<UserRegisterControllerModel> registerUser(
-            @Valid @RequestBody UserRegisterControllerModel user,
+    public ResponseEntity<UserRegisterControllerDTO> registerUser(
+            @Valid @RequestBody UserRegisterControllerDTO user,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -40,7 +40,15 @@ public class RegisterUserApi {
                     .build();
         }
 
-        UserServiceModel register = userService.register(modelMapper.map(user, UserServiceModel.class));
+        try {
+            userService.register(modelMapper.map(user, UserServiceDTO.class));
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.METHOD_NOT_ALLOWED)
+                    .header(HttpHeaders.LOCATION, "/v1/register")
+                    .build();
+        }
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

@@ -1,6 +1,5 @@
 package com.ganchevdimitarg.webshop.security.service.service;
 
-import com.ganchevdimitarg.webshop.security.data.model.Authority;
 import com.ganchevdimitarg.webshop.security.data.model.UserEntity;
 import com.ganchevdimitarg.webshop.security.data.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -27,10 +26,10 @@ public class UsersDetailsService implements UserDetailsService {
 
         return userEntityOpt
                 .map(this::mapToUserDetails)
-                .orElseThrow(()->new UsernameNotFoundException("User " + username + " not found!"));
+                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found!"));
     }
 
-    private UserDetails mapToUserDetails(UserEntity entity){
+    private UserDetails mapToUserDetails(UserEntity entity) {
         return new User(
                 entity.getUsername(),
                 entity.getPassword(),
@@ -40,7 +39,7 @@ public class UsersDetailsService implements UserDetailsService {
                         .collect(Collectors.toList()));
     }
 
-    private GrantedAuthority mapToGrantedAuthority(GrantedAuthority authority){
+    private GrantedAuthority mapToGrantedAuthority(GrantedAuthority authority) {
         return new SimpleGrantedAuthority(authority.getAuthority());
     }
 }
